@@ -21,7 +21,7 @@ public class Collision {
 	
 	}
 	
-	public static boolean checkCollision(ArrayList<Airplane> objects){
+	public static boolean hasCollision(ArrayList<Airplane> objects){
 		
 		boolean b = false;
 		
