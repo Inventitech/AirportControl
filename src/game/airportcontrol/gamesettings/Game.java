@@ -2,7 +2,7 @@ package game.airportcontrol.gamesettings;
 
 import game.airportcontrol.gamefunctions.Collision;
 import game.airportcontrol.landing.Airport;
-import game.airportcontrol.moveables.Airplane;
+import game.airportcontrol.moveables.AircraftBase;
 
 import java.awt.Point;
 import java.io.IOException;
@@ -19,12 +19,12 @@ import org.newdawn.slick.particles.ParticleIO;
 import org.newdawn.slick.particles.ParticleSystem;
 
 public class Game extends BasicGame {
-	static ArrayList<Airplane> airplanes = new ArrayList<Airplane>();
+	static ArrayList<AircraftBase> airplanes = new ArrayList<AircraftBase>();
 	Airport airport;
 
 	static ArrayList<Point> path = new ArrayList<Point>();
 	static int c = 0;
-	static Airplane pathTo = null;
+	static AircraftBase pathTo = null;
 
 	private ParticleSystem system;
 	private int mode = ParticleSystem.BLEND_COMBINE;
@@ -62,7 +62,7 @@ public class Game extends BasicGame {
 			throws SlickException {
 		system.update(delta); // needed for particle effect
 
-		for (Airplane curAirplane : airplanes) {
+		for (AircraftBase curAirplane : airplanes) {
 			curAirplane.update(GameSetup.resWidth, GameSetup.resHeight);
 		}
 
@@ -108,7 +108,7 @@ public class Game extends BasicGame {
 		int ax = 0;
 		int ay = 0;
 		double an = 0;
-		for (Airplane curAirplane : airplanes) {
+		for (AircraftBase curAirplane : airplanes) {
 			img = curAirplane.getImage().copy();
 			img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
 																		// ADD

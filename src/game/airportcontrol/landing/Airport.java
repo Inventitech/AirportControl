@@ -1,6 +1,8 @@
 package game.airportcontrol.landing;
 
+import game.airportcontrol.moveables.AircraftBase;
 import game.airportcontrol.moveables.Airplane;
+import game.airportcontrol.moveables.Helicopter;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -13,43 +15,46 @@ public class Airport {
 	private Image image;
 	private int landedAirplanes;
 	private ArrayList<LandingDevice> landingDevices;
-	
-	public Airport(String iata){
+
+	public Airport(String iata) {
 		this.landingDevices = new ArrayList<LandingDevice>();
-		
-		if("muc" == iata) {
+
+		if ("muc" == iata) {
 			// Runways
-			this.landingDevices.add(new Runway(new Point(354,319),35,10,35,60));
-			this.landingDevices.add(new Runway(new Point(502,188),35,170,20,60));
-			
+			this.landingDevices.add(new Runway(new Point(354, 319), 35, 10, 35,
+					60));
+			this.landingDevices.add(new Runway(new Point(502, 188), 35, 170,
+					20, 60));
+
 			// Helipads
-			this.landingDevices.add(new Helipad(new Point(153, 252),35,15));
+			this.landingDevices.add(new Helipad(new Point(153, 252), 35, 15));
 		}
-		
+
 		/* Automated Graphic Loader */
 		try {
 			this.image = new Image("/data/airports/ap_" + iata + ".jpg");
 		} catch (SlickException e) {
 			System.out.println("Couldn't find Image for Airport " + iata);
 		}
-	
+
 		this.landedAirplanes = 0;
 	}
-	
-	
-	public void update(ArrayList<Airplane> airplanes) {
+
+	public void update(ArrayList<AircraftBase> airplanes) {
 		for (LandingDevice curLandingDev : landingDevices) {
-			ArrayList<Airplane> copyOfOriginalAirplanes = (ArrayList<Airplane>) airplanes.clone();
-			for (Airplane curAirplane : copyOfOriginalAirplanes) {
+			ArrayList<AircraftBase> copyOfOriginalAirplanes = (ArrayList<AircraftBase>) airplanes
+					.clone();
+			for (AircraftBase curAirplane : copyOfOriginalAirplanes) {
 				// it's an airplane
-				if (curAirplane.getTypeOfAirplane() == 1 && Runway.class.isInstance(curLandingDev)) {
+				if (curAirplane instanceof Airplane
+						&& Runway.class.isInstance(curLandingDev)) {
 					/* Landing attempt has been started */
 					if (null != curAirplane.getInitiateLanding()
 							&& curAirplane.getInitiateLanding() == curLandingDev) {
 						// plane has successfully landed
 						if (curAirplane.getLandingPrecision() <= 0) {
 							airplanes.remove(curAirplane);
-							// System.out.println(curAirplane.getAngle()); 
+							// System.out.println(curAirplane.getAngle());
 							// helpful for designing new airports
 							landedAirplanes++;
 						}
@@ -61,7 +66,8 @@ public class Airport {
 							// plane is approaching the runway in the required
 							// angle, with desired precision
 							if (Math.abs(curAirplane.getAngle()
-									- ((Runway)curLandingDev).getApproachableAngle()) < ((Runway)curLandingDev)
+									- ((Runway) curLandingDev)
+											.getApproachableAngle()) < ((Runway) curLandingDev)
 									.getApproachableAnglePrecision()) {
 								if (curAirplane.getLandingPrecision() > 0) {
 									curAirplane.setLandingPrecision(curAirplane
@@ -85,9 +91,10 @@ public class Airport {
 						curAirplane.setInitiateLanding(curLandingDev);
 					}
 				}
-				
+
 				// it's a heli
-				else if(curAirplane.getTypeOfAirplane() == 2 && Helipad.class.isInstance(curLandingDev)) {
+				else if (curAirplane instanceof Helicopter
+						&& Helipad.class.isInstance(curLandingDev)) {
 					/* Initiate landing attempt */
 					/* Landing attempt has been started */
 					if (null != curAirplane.getInitiateLanding()
@@ -104,7 +111,8 @@ public class Airport {
 						else if (curLandingDev.getCheckPoint().distance(
 								curAirplane.getPosition()) < curLandingDev
 								.getRunwayLength()) {
-							// plane is approaching the runway in the required precision
+							// plane is approaching the runway in the required
+							// precision
 							if (curAirplane.getLandingPrecision() > 0) {
 								curAirplane.setLandingPrecision(curAirplane
 										.getLandingPrecision() - 1);
@@ -126,20 +134,17 @@ public class Airport {
 						curAirplane.setInitiateLanding(curLandingDev);
 					}
 				}
-				
-				
-				
+
 			}
 		}
 	}
-	
+
 	public int getLandedAirplanes() {
 		return landedAirplanes;
 	}
 
-
-	public Image getImage(){
+	public Image getImage() {
 		return this.image;
 	}
-	
+
 }
