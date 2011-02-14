@@ -31,6 +31,8 @@ public class Collision {
 			for (int j = i + 1; j < objects.size(); j++) {
 				b = areColliding(objects.get(i), objects.get(j));
 				if (b == true) {
+					objects.get(i).drawCollision();
+					objects.get(j).drawCollision();
 					return true;
 				}
 			}

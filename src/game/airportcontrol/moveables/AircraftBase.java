@@ -6,9 +6,12 @@ package game.airportcontrol.moveables;
 import game.airportcontrol.landing.LandingDevice;
 
 import java.awt.Point;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
+import org.newdawn.slick.particles.ParticleIO;
+import org.newdawn.slick.particles.ParticleSystem;
 
 /**
  * @author Moritz Beller
@@ -28,6 +31,9 @@ public class AircraftBase {
 
 	private final int mapScaling = 20;
 
+	public ParticleSystem system;
+	private int mode = ParticleSystem.BLEND_COMBINE;
+
 	public AircraftBase(Point position, int angle, double speed) {
 		this.position = position;
 		this.transparency = 1;
@@ -36,6 +42,16 @@ public class AircraftBase {
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
 		this.speed = Math.max(speed, 3.0);
+		try {
+			system = ParticleIO.loadConfiguredSystem("data/particles/sys.xml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		system.setBlendingMode(mode);
+		for (int i = 2; i < 6; i++) {
+			system.getEmitter(i).setEnabled(false);
+		}
 	}
 
 	public void setWayPoints(ArrayList<Point> wp) {
@@ -85,7 +101,7 @@ public class AircraftBase {
 		return true;
 	}
 
-	public void update(int width, int height) {
+	public void update(int width, int height, int delta) {
 		boolean haspath = alignAircraftToPoint(wayPoints);
 		double ddx, ddy;
 		ddx = Math.cos(((angle) / 360) * 2 * Math.PI) * speed;
@@ -123,7 +139,7 @@ public class AircraftBase {
 		else if (y < 0) {
 			angle = 180 + angle;// 90
 		}
-
+		system.update(delta); // particle effect
 		setPosition(targetPosition);
 	}
 
@@ -163,6 +179,12 @@ public class AircraftBase {
 
 	public void setTransparency(double transparency) {
 		this.transparency = transparency;
+	}
+
+	public void drawCollision() {
+		for (int i = 2; i < 6; i++) {
+			system.getEmitter(i).setEnabled(true);
+		}
 	}
 
 }

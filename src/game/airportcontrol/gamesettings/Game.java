@@ -5,7 +5,6 @@ import game.airportcontrol.landing.Airport;
 import game.airportcontrol.moveables.AircraftBase;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.AppGameContainer;
@@ -15,8 +14,6 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import org.newdawn.slick.particles.ParticleIO;
-import org.newdawn.slick.particles.ParticleSystem;
 
 public class Game extends BasicGame {
 	static ArrayList<AircraftBase> airplanes = new ArrayList<AircraftBase>();
@@ -26,8 +23,6 @@ public class Game extends BasicGame {
 	static int c = 0;
 	static AircraftBase pathTo = null;
 
-	private ParticleSystem system;
-	private int mode = ParticleSystem.BLEND_COMBINE;
 	private long colTime = 0; // TODO (MMB) awful hack
 
 	public Game() {
@@ -40,30 +35,18 @@ public class Game extends BasicGame {
 		airport = new Airport("muc");
 
 		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 2; j++) {
+			for (int j = 0; j < 8; j++) {
 				airplanes.add(GameSetup.genRandomPlane());
 			}
 		}
 
-		try {
-			system = ParticleIO.loadConfiguredSystem("data/particles/sys.xml");
-			system.setBlendingMode(mode);
-			for (int i = 2; i < 6; i++) {
-				system.getEmitter(i).setEnabled(false);
-			}
-
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 	}
 
 	@Override
 	public void update(GameContainer container, int delta)
 			throws SlickException {
-		system.update(delta); // needed for particle effect
-
 		for (AircraftBase curAirplane : airplanes) {
-			curAirplane.update(GameSetup.resWidth, GameSetup.resHeight);
+			curAirplane.update(GameSetup.resWidth, GameSetup.resHeight, delta);
 		}
 
 		airport.update(airplanes);
@@ -75,10 +58,7 @@ public class Game extends BasicGame {
 				// TODO (MMB) Add collision effect, end game awful use of
 				// particles
 				collision();
-				for (int i = 2; i < 6; i++) {
-					system.getEmitter(i).setEnabled(true);
-					collision();
-				}
+
 			}
 		}
 
@@ -136,6 +116,12 @@ public class Game extends BasicGame {
 			ax = curAirplane.getPosition().x;
 			ay = curAirplane.getPosition().y;
 			an = curAirplane.getAngle();
+
+			curAirplane.system.setPosition(ax, ay);
+			g.rotate(ax, ay, (int) an);
+			g.translate(1, 1);
+			curAirplane.system.render();
+			g.resetTransform();
 		}
 
 		for (int i = 1; i < path.size(); i++) {
@@ -143,12 +129,6 @@ public class Game extends BasicGame {
 					path.get(i).y);
 		}
 
-		system.setPosition(ax, ay);
-
-		g.rotate(ax, ay, (int) an);
-		g.translate(1, 1);
-		system.render();
-		g.resetTransform();
 	}
 
 	public static void main(String[] args) {
