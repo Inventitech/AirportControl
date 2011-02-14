@@ -1,6 +1,8 @@
 package game.airportcontrol.gamesettings;
 
+import game.airportcontrol.moveables.AircraftBase;
 import game.airportcontrol.moveables.Airplane;
+import game.airportcontrol.moveables.Helicopter;
 
 import java.awt.Point;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class GameSetup {
 	public static final boolean doCollisionChecks = true;
 
 	/* some methods used for game */
-	public static Airplane genRandomPlane() {
+	public static AircraftBase genRandomPlane() {
 		Random rnd = new Random();
 		int x = rnd.nextInt(GameSetup.resWidth * 20);
 		int y = rnd.nextInt(GameSetup.resHeight * 20);
@@ -41,7 +43,14 @@ public class GameSetup {
 
 		ArrayList<Point> pts = new ArrayList<Point>();
 		pts.add(new Point(rnd.nextInt(400) + 200, rnd.nextInt(200) + 100));
-		Airplane ap = new Airplane(p, rnd.nextInt(360), rnd.nextInt(20) + 10);
+		int typeOfAirCraft = rnd.nextInt(2);
+		AircraftBase ap;
+		if (typeOfAirCraft == 0) {
+			ap = new Airplane(p, rnd.nextInt(360), rnd.nextInt(20) + 10);
+		}
+		else {
+			ap = new Helicopter(p, rnd.nextInt(360), rnd.nextInt(5) + 5);
+		}
 		ap.setWayPoints(pts);
 
 		return ap;

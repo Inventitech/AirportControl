@@ -35,7 +35,7 @@ public class Game extends BasicGame {
 		airport = new Airport("muc");
 
 		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 8; j++) {
+			for (int j = 0; j < 4; j++) {
 				airplanes.add(GameSetup.genRandomPlane());
 			}
 		}
