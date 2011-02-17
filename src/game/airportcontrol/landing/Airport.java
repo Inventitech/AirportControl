@@ -13,10 +13,12 @@ import org.newdawn.slick.SlickException;
 public class Airport {
 
 	private Image image;
+	private int toCreateAirplanes;
 	private int landedAirplanes;
 	private ArrayList<LandingDevice> landingDevices;
 
-	public Airport(String iata) {
+	public Airport(String iata, int toCreateAirplanes) {
+		this.toCreateAirplanes = toCreateAirplanes;
 		this.landingDevices = new ArrayList<LandingDevice>();
 
 		if ("muc" == iata) {
@@ -141,6 +143,10 @@ public class Airport {
 
 	public int getLandedAirplanes() {
 		return landedAirplanes;
+	}
+
+	public int getToCreateAirplanes() {
+		return toCreateAirplanes;
 	}
 
 	public Image getImage() {

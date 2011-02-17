@@ -32,12 +32,10 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc");
+		airport = new Airport("muc", 4);
 
-		for (int i = 0; i < 1; i++) {
-			for (int j = 0; j < 4; j++) {
-				airplanes.add(GameSetup.genRandomPlane());
-			}
+		for (int j = 0; j < airport.getToCreateAirplanes(); j++) {
+			airplanes.add(GameSetup.genRandomPlane());
 		}
 
 	}
@@ -63,7 +61,10 @@ public class Game extends BasicGame {
 		}
 
 		// Game over?
-		if (colTime > 0 && System.currentTimeMillis() - colTime > 700) {
+		if (colTime > 0
+				&& System.currentTimeMillis() - colTime > 700
+				|| airport.getLandedAirplanes() == airport
+						.getToCreateAirplanes()) {
 			container.exit();
 		}
 	}
