@@ -1,5 +1,6 @@
 package game.airportcontrol.landing;
 
+import game.airportcontrol.gamesettings.GameSetup;
 import game.airportcontrol.moveables.AircraftBase;
 import game.airportcontrol.moveables.Airplane;
 import game.airportcontrol.moveables.Helicopter;
@@ -11,15 +12,21 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Airport {
-
+	
 	private Image image;
 	private int toCreateAirplanes;
 	private int landedAirplanes;
+	private double aircraftSpawnRatio;
 	private ArrayList<LandingDevice> landingDevices;
 
-	public Airport(String iata, int toCreateAirplanes) {
+	/*
+	 * airCraftSpawnRatio: is defined to be - on average - how many aircrafts will spawn within ten seconds
+	 * 
+	 */
+	public Airport(String iata, int toCreateAirplanes, double airCraftSpawnRatio) {
 		this.toCreateAirplanes = toCreateAirplanes;
 		this.landingDevices = new ArrayList<LandingDevice>();
+		this.aircraftSpawnRatio = airCraftSpawnRatio/(1000*10/GameSetup.UPDATE_INTERVALL_IN_MS);
 
 		if ("muc" == iata) {
 			// Runways
@@ -152,6 +159,10 @@ public class Airport {
 
 	public Image getImage() {
 		return this.image;
+	}
+	
+	public double getAircraftSpawnRatio () {
+		return aircraftSpawnRatio;
 	}
 
 }

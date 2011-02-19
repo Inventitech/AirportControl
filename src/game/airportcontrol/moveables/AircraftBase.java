@@ -23,7 +23,6 @@ public class AircraftBase {
 
 	private Point position;
 	private double curAngle;
-	private double targetAngle;
 	private ArrayList<Point> wayPoints;
 	private double speed;
 

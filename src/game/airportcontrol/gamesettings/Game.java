@@ -6,6 +6,7 @@ import game.airportcontrol.moveables.AircraftBase;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
@@ -23,6 +24,8 @@ public class Game extends BasicGame {
 	static int c = 0;
 	static AircraftBase pathTo = null;
 
+
+	private Random rand;
 	private long colTime = 0; // TODO (MMB) awful hack
 
 	public Game() {
@@ -32,17 +35,24 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 4);
+		airport = new Airport("muc", 10, 2);
+		rand = new Random();
 
-		for (int j = 0; j < airport.getToCreateAirplanes(); j++) {
+		for (int j = 0; j < rand.nextInt(4)+1; j++) {
 			airplanes.add(GameSetup.genRandomPlane());
 		}
 
+	}
+	
+	private void addRandomPlane() {
+		if(rand.nextDouble()<airport.getAircraftSpawnRatio() && airport.getLandedAirplanes()+airplanes.size() < airport.getToCreateAirplanes())
+			airplanes.add(GameSetup.genRandomPlane());
 	}
 
 	@Override
 	public void update(GameContainer container, int delta)
 			throws SlickException {
+		addRandomPlane();
 		for (AircraftBase curAirplane : airplanes) {
 			curAirplane.update(GameSetup.resWidth, GameSetup.resHeight, delta);
 		}
@@ -84,7 +94,7 @@ public class Game extends BasicGame {
 				container.getHeight());
 		g.drawString(
 				System.getProperty("user.name") + ", "
-						+ airport.getLandedAirplanes(), 0, 25);
+						+ airport.getLandedAirplanes() + " / " + airport.getToCreateAirplanes(), 0, 25);
 		Image img;
 		int ax = 0;
 		int ay = 0;
@@ -137,8 +147,8 @@ public class Game extends BasicGame {
 			AppGameContainer app = new AppGameContainer(new Game());
 			app.setDisplayMode(GameSetup.resWidth, GameSetup.resHeight,
 					GameSetup.fullScreenMode);
-			app.setMaximumLogicUpdateInterval(20);
-			app.setMinimumLogicUpdateInterval(20);
+			app.setMaximumLogicUpdateInterval(GameSetup.UPDATE_INTERVALL_IN_MS);
+			app.setMinimumLogicUpdateInterval(GameSetup.UPDATE_INTERVALL_IN_MS);
 			// app.setTargetFrameRate(150);
 			app.setShowFPS(GameSetup.showFPS);
 			app.start();

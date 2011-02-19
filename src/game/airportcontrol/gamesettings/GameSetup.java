@@ -18,6 +18,8 @@ public class GameSetup {
 	public static final boolean showFPS = true;
 
 	public static final boolean doCollisionChecks = true;
+	
+	public static final int UPDATE_INTERVALL_IN_MS = 20;
 
 	/* some methods used for game */
 	public static AircraftBase genRandomPlane() {
