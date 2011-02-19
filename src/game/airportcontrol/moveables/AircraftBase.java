@@ -102,7 +102,7 @@ public class AircraftBase {
 	}
 
 	public void update(int width, int height, int delta) {
-		boolean haspath = alignAircraftToPoint(wayPoints);
+		alignAircraftToPoint(wayPoints);
 		double ddx, ddy;
 		ddx = Math.cos(((angle) / 360) * 2 * Math.PI) * speed;
 		ddy = Math.sin(((angle) / 360) * 2 * Math.PI) * speed;

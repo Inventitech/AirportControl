@@ -44,6 +44,7 @@ public class Airport {
 
 	public void update(ArrayList<AircraftBase> airplanes) {
 		for (LandingDevice curLandingDev : landingDevices) {
+			@SuppressWarnings("unchecked")
 			ArrayList<AircraftBase> copyOfOriginalAirplanes = (ArrayList<AircraftBase>) airplanes
 					.clone();
 			for (AircraftBase curAirplane : copyOfOriginalAirplanes) {
