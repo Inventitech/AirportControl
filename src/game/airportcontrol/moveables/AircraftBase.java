@@ -22,7 +22,8 @@ public class AircraftBase {
 	private double transparency;
 
 	private Point position;
-	private double angle;
+	private double curAngle;
+	private double targetAngle;
 	private ArrayList<Point> wayPoints;
 	private double speed;
 
@@ -37,7 +38,7 @@ public class AircraftBase {
 	public AircraftBase(Point position, int angle, double speed) {
 		this.position = position;
 		this.transparency = 1;
-		this.angle = angle;
+		this.curAngle = angle;
 		this.wayPoints = null;
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
@@ -96,7 +97,9 @@ public class AircraftBase {
 		if (dx < 0) {
 			a += 180;
 		}
-
+		
+		// TODO MMB add code for smooth curving here!
+		
 		setAngle(a);
 		return true;
 	}
@@ -104,8 +107,8 @@ public class AircraftBase {
 	public void update(int width, int height, int delta) {
 		alignAircraftToPoint(wayPoints);
 		double ddx, ddy;
-		ddx = Math.cos(((angle) / 360) * 2 * Math.PI) * speed;
-		ddy = Math.sin(((angle) / 360) * 2 * Math.PI) * speed;
+		ddx = Math.cos(((curAngle) / 360) * 2 * Math.PI) * speed;
+		ddy = Math.sin(((curAngle) / 360) * 2 * Math.PI) * speed;
 
 		int idx, idy;
 
@@ -128,27 +131,27 @@ public class AircraftBase {
 
 		// SIDE-BOUNCE_BACK
 		if (x > width * mapScaling) {
-			angle = 180 + angle; // 180
+			curAngle = 180 + curAngle; // 180
 		}
 		else if (y > height * mapScaling) {
-			angle = 180 + angle; // 270
+			curAngle = 180 + curAngle; // 270
 		}
 		else if (x < 0) {
-			angle = 180 + angle; // 0
+			curAngle = 180 + curAngle; // 0
 		}
 		else if (y < 0) {
-			angle = 180 + angle;// 90
+			curAngle = 180 + curAngle;// 90
 		}
 		system.update(delta); // particle effect
 		setPosition(targetPosition);
 	}
 
 	public double getAngle() {
-		return angle;
+		return curAngle;
 	}
 
 	public void setAngle(double angle) {
-		this.angle = angle;
+		this.curAngle = angle;
 	}
 
 	public Image getImage() {
