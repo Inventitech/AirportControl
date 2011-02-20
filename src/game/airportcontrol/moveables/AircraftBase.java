@@ -17,7 +17,7 @@ import org.newdawn.slick.particles.ParticleSystem;
  * @author Moritz Beller
  * 
  */
-public class AircraftBase {
+public abstract class AircraftBase {
 	protected Image image;
 	private double transparency;
 
@@ -32,7 +32,7 @@ public class AircraftBase {
 	private final int mapScaling = 20;
 
 	public ParticleSystem system;
-	private int mode = ParticleSystem.BLEND_COMBINE;
+	protected int mode = ParticleSystem.BLEND_COMBINE;
 
 	public AircraftBase(Point position, int angle, double speed) {
 		this.position = position;
@@ -42,16 +42,7 @@ public class AircraftBase {
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
 		this.speed = Math.max(speed, 3.0);
-		try {
-			system = ParticleIO.loadConfiguredSystem("data/particles/sys.xml");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		system.setBlendingMode(mode);
-		for (int i = 2; i < 6; i++) {
-			system.getEmitter(i).setEnabled(false);
-		}
+		
 	}
 
 	public void setWayPoints(ArrayList<Point> wp) {

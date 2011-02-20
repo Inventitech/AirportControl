@@ -1,9 +1,11 @@
 package game.airportcontrol.moveables;
 
 import java.awt.Point;
+import java.io.IOException;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.particles.ParticleIO;
 
 public class Helicopter extends AircraftBase {
 
@@ -20,7 +22,16 @@ public class Helicopter extends AircraftBase {
 			System.out.println("Error orcurred during loading picture.");
 			e.printStackTrace();
 		}
-
+		try {
+			system = ParticleIO.loadConfiguredSystem("data/particles/sys.xml");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		system.setBlendingMode(mode);
+		for (int i = 0; i < 6; i++) {
+			system.getEmitter(i).setEnabled(false);
+		}
 	}
 
 }
