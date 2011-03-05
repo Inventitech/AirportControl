@@ -20,6 +20,8 @@ public class GameSetup {
 	public static final boolean doCollisionChecks = true;
 	
 	public static final int UPDATE_INTERVALL_IN_MS = 20;
+	
+	public static final boolean VERBOSE = true;
 
 	/* some methods used for game */
 	public static AircraftBase genRandomPlane() {

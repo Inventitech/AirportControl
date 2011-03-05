@@ -89,6 +89,12 @@ public abstract class AircraftBase {
 		}
 		
 		// TODO MMB add code for smooth curving here!
+		if(Math.abs(Math.abs(curAngle)-Math.abs(a))>5) {
+			if(a>curAngle)
+				a=curAngle+5;
+			else
+				a=curAngle-5;
+		}
 		
 		setAngle(a);
 		return true;
@@ -112,12 +118,12 @@ public abstract class AircraftBase {
 
 		Point targetPosition = new Point(x, y);
 
-		if (wayPoints != null && wayPoints.size() > 0) { // not nice
+		/*if (wayPoints != null && wayPoints.size() > 0) { // not nice
 			if (targetPosition.distance(new Point(wayPoints.get(0).x
-					* mapScaling, wayPoints.get(0).y * mapScaling)) < 5 * mapScaling) {
+					* mapScaling, wayPoints.get(0).y * mapScaling)) < 10 * mapScaling) {
 				wayPoints.remove(0);
 			}
-		}
+		}*/
 
 		// SIDE-BOUNCE_BACK
 		if (x > width * mapScaling) {

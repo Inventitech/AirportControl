@@ -5,6 +5,7 @@ import game.airportcontrol.landing.Airport;
 import game.airportcontrol.moveables.AircraftBase;
 
 import java.awt.Point;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -35,10 +36,10 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 10, 2);
+		airport = new Airport("muc", 1, 2);
 		rand = new Random();
 
-		for (int j = 0; j < rand.nextInt(4)+1; j++) {
+		for (int j = 0; j < 1; j++) {
 			airplanes.add(GameSetup.genRandomPlane());
 		}
 
@@ -116,6 +117,12 @@ public class Game extends BasicGame {
 					curAirplane.getPosition().y
 							- curAirplane.getImage().getWidth() / 2, color);
 
+			NumberFormat nf = NumberFormat.getInstance();
+			nf.setMaximumFractionDigits(0);
+			
+			if(GameSetup.VERBOSE)
+				g.drawString("curAngle: " + nf.format(curAirplane.getAngle()), 0, 40);
+			
 			if (curAirplane.getWayPoints() != null) {
 				for (int i = 1; i < curAirplane.getWayPoints().size(); i++) {
 					g.drawLine(curAirplane.getWayPoints().get(i - 1).x,
