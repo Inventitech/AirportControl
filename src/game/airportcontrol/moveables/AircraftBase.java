@@ -25,6 +25,12 @@ public abstract class AircraftBase {
 	private double curAngle;
 	private ArrayList<Point> wayPoints;
 	private double speed;
+	private enum turningDirections {
+		LEFT_TURN,
+		RIGHT_TURN,
+		STRAIGHT
+	};
+	private turningDirections turningDirection;
 
 	private LandingDevice initiateLanding;
 	private int landingPrecision;
@@ -42,7 +48,7 @@ public abstract class AircraftBase {
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
 		this.speed = Math.max(speed, 3.0);
-		
+		this.turningDirection = turningDirections.STRAIGHT;
 	}
 
 	public void setWayPoints(ArrayList<Point> wp) {
@@ -84,16 +90,32 @@ public abstract class AircraftBase {
 		else {
 			a = (Math.atan((double) dy / (double) dx)) / (2 * Math.PI) * 360;
 		}
+		// avoid negative angles and map to angle [0;360]
 		if (dx < 0) {
 			a += 180;
 		}
+		else if(dy < 0) {
+			a += 360;
+		}
 		
-		// TODO MMB add code for smooth curving here!
-		if(Math.abs(Math.abs(curAngle)-Math.abs(a))>5) {
-			if(a>curAngle)
-				a=curAngle+5;
-			else
-				a=curAngle-5;
+		/*if(this.turningDirection == turningDirections.STRAIGHT) {
+			// no turn has been initiated on this waypoint before, i.e. aircraft is flying in a straight line atm
+			// decide which is closest: a right-turn or a left-turn
+			if()
+		}*/
+		
+		if (this.turningDirection != turningDirections.STRAIGHT) {
+			// TODO MMB add code for smooth curving here!
+			// find out nearest angle to move to!
+			if (Math.abs(Math.abs(curAngle) - Math.abs(a)) > 5) {
+				if (a > curAngle)
+					a = curAngle + 2;
+				else
+					a = curAngle - 2;
+			}
+			else {
+			 this.turningDirection = turningDirections.STRAIGHT;
+			}
 		}
 		
 		setAngle(a);
@@ -118,12 +140,13 @@ public abstract class AircraftBase {
 
 		Point targetPosition = new Point(x, y);
 
-		/*if (wayPoints != null && wayPoints.size() > 0) { // not nice
+		if (wayPoints != null && wayPoints.size() > 0) { // not nice
 			if (targetPosition.distance(new Point(wayPoints.get(0).x
 					* mapScaling, wayPoints.get(0).y * mapScaling)) < 10 * mapScaling) {
 				wayPoints.remove(0);
+				this.turningDirection = turningDirections.STRAIGHT;
 			}
-		}*/
+		}
 
 		// SIDE-BOUNCE_BACK
 		if (x > width * mapScaling) {
@@ -138,6 +161,7 @@ public abstract class AircraftBase {
 		else if (y < 0) {
 			curAngle = 180 + curAngle;// 90
 		}
+		curAngle = curAngle % 360;
 		system.update(delta); // particle effect
 		setPosition(targetPosition);
 	}
