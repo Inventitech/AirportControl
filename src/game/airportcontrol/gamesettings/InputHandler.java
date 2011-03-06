@@ -34,12 +34,15 @@ public class InputHandler {
 				}
 			}
 		}
-		if(Game.path.size()>0) {
-		if (Game.path.get(Game.path.size()-1).distance(new Point(x,y)) >= Game.pathTo.getRequiredDistanceToWaypoint()/2)
-			Game.path.add(new Point(x, y));
+		if (Game.c == 0) {
+			if (Game.path.size() > 0 && Game.pathTo != null) {
+				if (Game.path.get(Game.path.size() - 1).distance(
+						new Point(x, y)) >= Game.pathTo
+						.getRequiredDistanceToWaypoint())
+					Game.path.add(new Point(x, y));
+			} else
+				Game.path.add(new Point(x, y));
 		}
-		else
-			Game.path.add(new Point(x,y));
 		Game.c++;
 		Game.c = Game.c % 5;
 	}
