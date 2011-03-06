@@ -16,6 +16,13 @@ import org.newdawn.slick.particles.ParticleSystem;
 /**
  * @author Moritz Beller
  * 
+ *         The aircraft angle is in [0;360] always It should be noted that the
+ *         nose of the aircraft when pointing to the right hand side denotes the
+ *         0, angle. A clockwise rotation from this direction onward increases
+ *         the angle
+ * 
+ *         All angles and distances are relative to middle of aircraft which is
+ *         defined to be centre of picture.
  */
 public abstract class AircraftBase {
 	protected Image image;
@@ -25,12 +32,15 @@ public abstract class AircraftBase {
 	private double curAngle;
 	private ArrayList<Point> wayPoints;
 	private double speed;
+
 	private enum turningDirections {
-		LEFT_TURN,
-		RIGHT_TURN,
-		STRAIGHT
+		LEFT_TURN, RIGHT_TURN, STRAIGHT
 	};
+
 	private turningDirections turningDirection;
+
+	private double turningSpeed;
+	private double requiredDistanceToWaypoint;
 
 	private LandingDevice initiateLanding;
 	private int landingPrecision;
@@ -40,7 +50,8 @@ public abstract class AircraftBase {
 	public ParticleSystem system;
 	protected int mode = ParticleSystem.BLEND_COMBINE;
 
-	public AircraftBase(Point position, int angle, double speed) {
+	public AircraftBase(Point position, int angle, double speed,
+			double turningSpeed, double requiredDistanceToWaypoint) {
 		this.position = position;
 		this.transparency = 1;
 		this.curAngle = angle;
@@ -48,6 +59,8 @@ public abstract class AircraftBase {
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
 		this.speed = Math.max(speed, 3.0);
+		this.turningSpeed = turningSpeed;
+		this.requiredDistanceToWaypoint = requiredDistanceToWaypoint;
 		this.turningDirection = turningDirections.STRAIGHT;
 	}
 
@@ -67,8 +80,7 @@ public abstract class AircraftBase {
 		this.initiateLanding = initiateLanding;
 		if (null != initiateLanding) {
 			setLandingPrecision(initiateLanding.getLandingPrecision());
-		}
-		else {
+		} else {
 			setLandingPrecision(1);
 			setTransparency(1);
 		}
@@ -84,41 +96,49 @@ public abstract class AircraftBase {
 		int dx = (p.x * mapScaling) - position.x;
 
 		double a;
-		if (dx == 0) {
+		if (dx == 0) { // division through 0 undefined
 			a = 0;
-		}
-		else {
+		} else { // calculate new heading through arcus tangens. Note: arctan in
+					// [-pi/2;pi/2], map to coordinates [-90;+90]
 			a = (Math.atan((double) dy / (double) dx)) / (2 * Math.PI) * 360;
 		}
-		// avoid negative angles and map to angle [0;360]
+		// avoid negative angles and map to full range angle [0;360]
 		if (dx < 0) {
 			a += 180;
-		}
-		else if(dy < 0) {
+		} else if (dy < 0) {
 			a += 360;
 		}
-		
-		/*if(this.turningDirection == turningDirections.STRAIGHT) {
-			// no turn has been initiated on this waypoint before, i.e. aircraft is flying in a straight line atm
-			// decide which is closest: a right-turn or a left-turn
-			if()
-		}*/
-		
-		if (this.turningDirection != turningDirections.STRAIGHT) {
-			// TODO MMB add code for smooth curving here!
-			// find out nearest angle to move to!
-			if (Math.abs(Math.abs(curAngle) - Math.abs(a)) > 5) {
-				if (a > curAngle)
-					a = curAngle + 2;
+
+		if (this.turningDirection == turningDirections.STRAIGHT) {
+			// no turn has been initiated on this waypoint before, i.e. aircraft
+			// is flying in a straight line atm
+			if (Math.abs(a - curAngle) > this.turningSpeed) {
+				// decide which is closest: a right-turn or a left-turn
+				if ((a > curAngle && a < curAngle + 180)
+						|| (a < (curAngle + 180) % 360 && curAngle >= 180))
+					this.turningDirection = turningDirections.RIGHT_TURN;
 				else
-					a = curAngle - 2;
-			}
-			else {
-			 this.turningDirection = turningDirections.STRAIGHT;
+					this.turningDirection = turningDirections.LEFT_TURN;
 			}
 		}
-		
-		setAngle(a);
+
+		if (this.turningDirection != turningDirections.STRAIGHT) {
+			// perform the actual smooth curving
+			if (this.turningDirection == turningDirections.LEFT_TURN) {
+				curAngle = (curAngle - this.turningSpeed) % 360;
+				if (curAngle < 0)
+					curAngle += 360;
+			} else
+				curAngle = (curAngle + this.turningSpeed) % 360;
+
+		}
+
+		if (Math.abs(a - curAngle) <= this.turningSpeed) {
+			setAngle(a);
+			this.turningDirection = turningDirections.STRAIGHT;
+		} else {
+			setAngle(curAngle);
+		}
 		return true;
 	}
 
@@ -142,26 +162,26 @@ public abstract class AircraftBase {
 
 		if (wayPoints != null && wayPoints.size() > 0) { // not nice
 			if (targetPosition.distance(new Point(wayPoints.get(0).x
-					* mapScaling, wayPoints.get(0).y * mapScaling)) < 10 * mapScaling) {
+					* mapScaling, wayPoints.get(0).y * mapScaling)) < requiredDistanceToWaypoint
+					* mapScaling) {
 				wayPoints.remove(0);
 				this.turningDirection = turningDirections.STRAIGHT;
 			}
 		}
 
-		// SIDE-BOUNCE_BACK
+		// wall bounce back
 		if (x > width * mapScaling) {
 			curAngle = 180 + curAngle; // 180
-		}
-		else if (y > height * mapScaling) {
+		} else if (y > height * mapScaling) {
 			curAngle = 180 + curAngle; // 270
-		}
-		else if (x < 0) {
+		} else if (x < 0) {
 			curAngle = 180 + curAngle; // 0
-		}
-		else if (y < 0) {
+		} else if (y < 0) {
 			curAngle = 180 + curAngle;// 90
 		}
+
 		curAngle = curAngle % 360;
+
 		system.update(delta); // particle effect
 		setPosition(targetPosition);
 	}
@@ -182,6 +202,10 @@ public abstract class AircraftBase {
 		Point p = new Point((position.x / mapScaling),
 				(position.y / mapScaling));
 		return p;
+	}
+	
+	public double getRequiredDistanceToWaypoint() {
+		return requiredDistanceToWaypoint;
 	}
 
 	public void setPosition(Point position) {

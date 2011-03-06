@@ -15,7 +15,7 @@ public class Helicopter extends AircraftBase {
 	 * @param speed
 	 */
 	public Helicopter(Point position, int angle, double speed) {
-		super(position, angle, speed);
+		super(position, angle, speed, 5, 3.4);
 		try {
 			image = new Image("data/aircraft/heli_test.png");
 		} catch (SlickException e) {
