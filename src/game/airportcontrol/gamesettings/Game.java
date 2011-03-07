@@ -4,17 +4,13 @@ import game.airportcontrol.gamefunctions.Collision;
 import game.airportcontrol.landing.Airport;
 import game.airportcontrol.moveables.AircraftBase;
 
-import java.awt.Point;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.BasicGame;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class Game extends BasicGame {
@@ -31,7 +27,7 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 1, 2);
+		airport = new Airport("muc", 5, 2);
 		rand = new Random();
 
 		for (int j = 0; j < 1; j++) {
@@ -91,55 +87,14 @@ public class Game extends BasicGame {
 		g.drawString(
 				System.getProperty("user.name") + ", "
 						+ airport.getLandedAirplanes() + " / " + airport.getToCreateAirplanes(), 0, 25);
-		Image img;
-		int ax = 0;
-		int ay = 0;
-		double an = 0;
+		
 		for (AircraftBase curAirplane : airplanes) {
-			img = curAirplane.getImage().copy();
-			img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
-																		// ADD
-																		// scale
-																		// factor
-																		// instead
-																		// of 1
-					(int) (0.5 * img.getHeight() * 1));
-			img.rotate((float) curAirplane.getAngle());
-			Color color = new Color(1f, 1f, 1f,
-					(float) curAirplane.getTransparency());
-			img.draw(curAirplane.getPosition().x
-					- curAirplane.getImage().getWidth() / 2,
-					curAirplane.getPosition().y
-							- curAirplane.getImage().getWidth() / 2, color);
-
-			NumberFormat nf = NumberFormat.getInstance();
-			nf.setMaximumFractionDigits(0);
-			
-			if(GameSetup.VERBOSE)
-				g.drawString("curAngle: " + nf.format(curAirplane.getAngle()), 0, 40);
-			
-			if (curAirplane.getWayPoints() != null) {
-				for (int i = 1; i < curAirplane.getWayPoints().size(); i++) {
-					g.drawLine(curAirplane.getWayPoints().get(i - 1).x,
-							curAirplane.getWayPoints().get(i - 1).y,
-							curAirplane.getWayPoints().get(i).x, curAirplane
-									.getWayPoints().get(i).y);
-				}
-			}
-			ax = curAirplane.getPosition().x;
-			ay = curAirplane.getPosition().y;
-			an = curAirplane.getAngle();
-
-			curAirplane.system.setPosition(ax, ay);
-			g.rotate(ax, ay, (int) an);
-			g.translate(1, 1);
-			curAirplane.system.render();
-			g.resetTransform();
+			curAirplane.render(g);
 		}
 
-		for (int i = 1; i < InputHandler.path.size(); i++) {
-			g.drawLine(InputHandler.path.get(i - 1).x, InputHandler.path.get(i - 1).y, InputHandler.path.get(i).x,
-					InputHandler.path.get(i).y);
+		for (int i = 1; i < InputHandler.curRecordedPath.size(); i++) {
+			g.drawLine(InputHandler.curRecordedPath.get(i - 1).x, InputHandler.curRecordedPath.get(i - 1).y, InputHandler.curRecordedPath.get(i).x,
+					InputHandler.curRecordedPath.get(i).y);
 		}
 
 	}

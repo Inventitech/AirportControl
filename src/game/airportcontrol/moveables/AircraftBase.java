@@ -4,12 +4,17 @@
 package game.airportcontrol.moveables;
 
 import game.airportcontrol.gamefunctions.Wayfinding;
+import game.airportcontrol.gamesettings.GameSetup;
 import game.airportcontrol.landing.LandingDevice;
 
 import java.awt.Point;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.particles.ParticleSystem;
 
 /**
@@ -84,8 +89,6 @@ public abstract class AircraftBase {
 			setTransparency(1);
 		}
 	}
-	
-
 
 	public boolean alignAircraftToPoint(ArrayList<Point> wp) {
 		if (wayPoints == null || wayPoints.size() < 1) {
@@ -227,10 +230,63 @@ public abstract class AircraftBase {
 		this.transparency = transparency;
 	}
 
-	public void drawCollision() {
+	public void enableCollisionEffect() {
 		for (int i = 2; i < 6; i++) {
 			system.getEmitter(i).setEnabled(true);
 		}
 	}
+	
+	// renders the WayPoints of the Aircraft, if there are any
+	private void renderWayPoints(Graphics g) {
+		if (this.getWayPoints() != null) {
+			for (int i = 1; i < this.getWayPoints().size(); i++) {
+				g.drawLine(this.getWayPoints().get(i - 1).x,
+						this.getWayPoints().get(i - 1).y,
+						this.getWayPoints().get(i).x, this
+								.getWayPoints().get(i).y);
+			}
+		}
+	}
 
+	public void render(Graphics g) throws SlickException {
+		// TODO bellemo render aircraft here to
+		Image img;
+		int ax = 0;
+		int ay = 0;
+		double an = 0;
+		
+		img = this.getImage().copy();
+		img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
+																	// ADD
+																	// scale
+																	// factor
+																	// instead
+																	// of 1
+				(int) (0.5 * img.getHeight() * 1));
+		img.rotate((float) this.getAngle());
+		Color color = new Color(1f, 1f, 1f,
+				(float) this.getTransparency());
+		img.draw(this.getPosition().x
+				- this.getImage().getWidth() / 2,
+				this.getPosition().y
+						- this.getImage().getWidth() / 2, color);
+
+		NumberFormat nf = NumberFormat.getInstance();
+		nf.setMaximumFractionDigits(0);
+		
+		if(GameSetup.VERBOSE)
+			g.drawString("curAngle: " + nf.format(this.getAngle()), 0, 40);
+		
+		renderWayPoints(g);
+		
+		ax = this.getPosition().x;
+		ay = this.getPosition().y;
+		an = this.getAngle();
+
+		this.system.setPosition(ax, ay);
+		g.rotate(ax, ay, (int) an);
+		g.translate(1, 1);
+		this.system.render();
+		g.resetTransform();
+	}
 }
