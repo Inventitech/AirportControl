@@ -33,7 +33,7 @@ public abstract class AircraftBase {
 	private double transparency;
 
 	private Point position;
-	private double curAngle;
+	private double curAngle, prevAngle;
 	private ArrayList<Point> wayPoints;
 	private double speed;
 
@@ -53,6 +53,8 @@ public abstract class AircraftBase {
 
 	public ParticleSystem system;
 	protected int mode = ParticleSystem.BLEND_COMBINE;
+	
+	public boolean isSelected = false;
 
 	public AircraftBase(Point position, int angle, double speed,
 			double turningSpeed, double requiredDistanceToWaypoint) {
@@ -237,6 +239,10 @@ public abstract class AircraftBase {
 			system.getEmitter(i).setEnabled(true);
 		}
 	}
+	
+	public void drawSelected(Graphics g) {
+		g.drawArc((float)position.x, (float)position.y, (float)getDiameter(), (float)getDiameter(), 0, 360);
+	}
 
 	// renders the WayPoints of the Aircraft, if there are any
 	private void renderWayPoints(Graphics g) {
@@ -255,15 +261,16 @@ public abstract class AircraftBase {
 		int ay = 0;
 		double an = 0;
 
-		img = this.getImage().copy();
+		img = this.getImage();
 		img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
-																	// ADD
-																	// scale
-																	// factor
-																	// instead
-																	// of 1
+				// ADD
+				// scale
+				// factor
+				// instead
+				// of 1
 				(int) (0.5 * img.getHeight() * 1));
-		img.rotate((float) this.getAngle());
+		
+		img.rotate((float) (getAngle()-prevAngle));
 		Color color = new Color(1f, 1f, 1f, (float) this.getTransparency());
 		img.draw(this.getPosition().x - this.getImage().getWidth() / 2,
 				this.getPosition().y - this.getImage().getWidth() / 2, color);
@@ -285,5 +292,6 @@ public abstract class AircraftBase {
 		g.translate(1, 1);
 		this.system.render();
 		g.resetTransform();
+		prevAngle = curAngle;
 	}
 }
