@@ -96,7 +96,8 @@ public abstract class AircraftBase {
 		}
 
 		Point p = wp.get(0);
-		double a = Wayfinding.calcAngleInSourceToTarget(this.position, p, this.mapScaling);
+		double a = Wayfinding.calcAngleInSourceToTarget(this.position, p,
+				this.mapScaling);
 
 		if (this.turningDirection == turningDirections.STRAIGHT) {
 			// no turn has been initiated on this waypoint before, i.e. aircraft
@@ -192,15 +193,15 @@ public abstract class AircraftBase {
 				(position.y / mapScaling));
 		return p;
 	}
-	
+
 	public double getSpeed() {
 		return this.speed;
 	}
-	
+
 	public double getTurningSpeed() {
 		return this.turningSpeed;
 	}
-	
+
 	public double getRequiredDistanceToWaypoint() {
 		return requiredDistanceToWaypoint;
 	}
@@ -220,10 +221,11 @@ public abstract class AircraftBase {
 	public double getTransparency() {
 		return transparency;
 	}
-	
+
 	public double getDiameter() {
-		double max = (image.getHeight() > image.getWidth() ? image.getHeight() : image.getWidth() );
-		return max/2*Math.PI;
+		double max = (image.getHeight() > image.getWidth() ? image.getHeight()
+				: image.getWidth());
+		return max / 2 * Math.PI;
 	}
 
 	public void setTransparency(double transparency) {
@@ -235,26 +237,24 @@ public abstract class AircraftBase {
 			system.getEmitter(i).setEnabled(true);
 		}
 	}
-	
+
 	// renders the WayPoints of the Aircraft, if there are any
 	private void renderWayPoints(Graphics g) {
 		if (this.getWayPoints() != null) {
 			for (int i = 1; i < this.getWayPoints().size(); i++) {
-				g.drawLine(this.getWayPoints().get(i - 1).x,
-						this.getWayPoints().get(i - 1).y,
-						this.getWayPoints().get(i).x, this
-								.getWayPoints().get(i).y);
+				g.drawLine(this.getWayPoints().get(i - 1).x, this
+						.getWayPoints().get(i - 1).y, this.getWayPoints()
+						.get(i).x, this.getWayPoints().get(i).y);
 			}
 		}
 	}
 
 	public void render(Graphics g) throws SlickException {
-		// TODO bellemo render aircraft here to
 		Image img;
 		int ax = 0;
 		int ay = 0;
 		double an = 0;
-		
+
 		img = this.getImage().copy();
 		img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
 																	// ADD
@@ -264,21 +264,18 @@ public abstract class AircraftBase {
 																	// of 1
 				(int) (0.5 * img.getHeight() * 1));
 		img.rotate((float) this.getAngle());
-		Color color = new Color(1f, 1f, 1f,
-				(float) this.getTransparency());
-		img.draw(this.getPosition().x
-				- this.getImage().getWidth() / 2,
-				this.getPosition().y
-						- this.getImage().getWidth() / 2, color);
+		Color color = new Color(1f, 1f, 1f, (float) this.getTransparency());
+		img.draw(this.getPosition().x - this.getImage().getWidth() / 2,
+				this.getPosition().y - this.getImage().getWidth() / 2, color);
 
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(0);
-		
-		if(GameSetup.VERBOSE)
+
+		if (GameSetup.VERBOSE)
 			g.drawString("curAngle: " + nf.format(this.getAngle()), 0, 40);
-		
+
 		renderWayPoints(g);
-		
+
 		ax = this.getPosition().x;
 		ay = this.getPosition().y;
 		an = this.getAngle();

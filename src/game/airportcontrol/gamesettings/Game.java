@@ -58,7 +58,6 @@ public class Game extends BasicGame {
 				// TODO (MMB) Add collision effect, end game awful use of
 				// particles
 				collision();
-
 			}
 		}
 
@@ -106,7 +105,6 @@ public class Game extends BasicGame {
 					GameSetup.fullScreenMode);
 			app.setMaximumLogicUpdateInterval(GameSetup.UPDATE_INTERVALL_IN_MS);
 			app.setMinimumLogicUpdateInterval(GameSetup.UPDATE_INTERVALL_IN_MS);
-			// app.setTargetFrameRate(150);
 			app.setShowFPS(GameSetup.showFPS);
 			app.start();
 		} catch (SlickException e) {
