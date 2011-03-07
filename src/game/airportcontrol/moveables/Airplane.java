@@ -15,7 +15,7 @@ public class Airplane extends AircraftBase {
 	 * @param speed
 	 */
 	public Airplane(Point position, int angle, double speed) {
-		super(position, angle, speed, 1.5, 26);
+		super(position, angle, speed, 2, 24);
 		try {
 			image = new Image("data/aircraft/plane_test.png");
 		} catch (SlickException e) {

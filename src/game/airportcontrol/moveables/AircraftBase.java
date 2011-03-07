@@ -3,14 +3,13 @@
  */
 package game.airportcontrol.moveables;
 
+import game.airportcontrol.gamefunctions.Wayfinding;
 import game.airportcontrol.landing.LandingDevice;
 
 import java.awt.Point;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Image;
-import org.newdawn.slick.particles.ParticleIO;
 import org.newdawn.slick.particles.ParticleSystem;
 
 /**
@@ -85,6 +84,8 @@ public abstract class AircraftBase {
 			setTransparency(1);
 		}
 	}
+	
+
 
 	public boolean alignAircraftToPoint(ArrayList<Point> wp) {
 		if (wayPoints == null || wayPoints.size() < 1) {
@@ -92,22 +93,7 @@ public abstract class AircraftBase {
 		}
 
 		Point p = wp.get(0);
-		int dy = (p.y * mapScaling) - position.y;
-		int dx = (p.x * mapScaling) - position.x;
-
-		double a;
-		if (dx == 0) { // division through 0 undefined
-			a = 0;
-		} else { // calculate new heading through arcus tangens. Note: arctan in
-					// [-pi/2;pi/2], map to coordinates [-90;+90]
-			a = (Math.atan((double) dy / (double) dx)) / (2 * Math.PI) * 360;
-		}
-		// avoid negative angles and map to full range angle [0;360]
-		if (dx < 0) {
-			a += 180;
-		} else if (dy < 0) {
-			a += 360;
-		}
+		double a = Wayfinding.calcAngleInSourceToTarget(this.position, p, this.mapScaling);
 
 		if (this.turningDirection == turningDirections.STRAIGHT) {
 			// no turn has been initiated on this waypoint before, i.e. aircraft
@@ -204,6 +190,14 @@ public abstract class AircraftBase {
 		return p;
 	}
 	
+	public double getSpeed() {
+		return this.speed;
+	}
+	
+	public double getTurningSpeed() {
+		return this.turningSpeed;
+	}
+	
 	public double getRequiredDistanceToWaypoint() {
 		return requiredDistanceToWaypoint;
 	}
@@ -222,6 +216,11 @@ public abstract class AircraftBase {
 
 	public double getTransparency() {
 		return transparency;
+	}
+	
+	public double getDiameter() {
+		double max = (image.getHeight() > image.getWidth() ? image.getHeight() : image.getWidth() );
+		return max/2*Math.PI;
 	}
 
 	public void setTransparency(double transparency) {

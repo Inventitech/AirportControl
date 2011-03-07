@@ -1,5 +1,6 @@
 package game.airportcontrol.gamesettings;
 
+import game.airportcontrol.gamefunctions.Wayfinding;
 import game.airportcontrol.moveables.AircraftBase;
 
 import java.awt.Point;
@@ -8,42 +9,41 @@ import java.util.ArrayList;
 import org.newdawn.slick.Input;
 
 public class InputHandler {
-
+	private static AircraftBase curSelection;
+	public static ArrayList<Point> path = new ArrayList<Point>();
+	
 	public static void inputHandler(Input input) {
 		if (input.isMouseButtonDown(0)) {
 			recordTrack(input.getAbsoluteMouseX(), input.getAbsoluteMouseY());
-		}
-		else {
+		} else {
 			saveTrack();
 		}
 	}
 
 	public static void saveTrack() {
-		if (Game.path.size() > 0) {
-			if (Game.pathTo != null)
-				Game.pathTo.setWayPoints(Game.path);
-			Game.path = new ArrayList<Point>();
+		if (path.size() > 0) {
+			if (curSelection != null)
+				curSelection.setWayPoints(path);
+			path = new ArrayList<Point>();
 		}
 	}
 
 	public static void recordTrack(int x, int y) {
-		if (Game.path.isEmpty()) {
-			for (AircraftBase a : Game.airplanes) {
-				if (a.getPosition().distance(new Point(x, y)) < 20) {
-					Game.pathTo = a;
+		if (path.isEmpty()) {
+			for (AircraftBase curAircraft : Game.airplanes) {
+				if (curAircraft.getPosition().distance(new Point(x, y)) < curAircraft.getDiameter()) {
+					curSelection = curAircraft;
 				}
 			}
 		}
-		if (Game.c == 0) {
-			if (Game.path.size() > 0 && Game.pathTo != null) {
-				if (Game.path.get(Game.path.size() - 1).distance(
-						new Point(x, y)) >= Game.pathTo
-						.getRequiredDistanceToWaypoint())
-					Game.path.add(new Point(x, y));
-			} else
-				Game.path.add(new Point(x, y));
-		}
-		Game.c++;
-		Game.c = Game.c % 5;
+		if (path.size() > 0 && curSelection != null) {
+			if (path.get(path.size() - 1).distance(new Point(x, y)) >= curSelection
+					.getRequiredDistanceToWaypoint()
+					* curSelection.getSpeed()
+					/ 4 / curSelection.getTurningSpeed()) {
+				path.add(new Point(x, y));
+			}
+		} else
+			path.add(new Point(x, y));
 	}
 }

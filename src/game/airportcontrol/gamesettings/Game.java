@@ -21,11 +21,6 @@ public class Game extends BasicGame {
 	static ArrayList<AircraftBase> airplanes = new ArrayList<AircraftBase>();
 	Airport airport;
 
-	static ArrayList<Point> path = new ArrayList<Point>();
-	static int c = 0;
-	static AircraftBase pathTo = null;
-
-
 	private Random rand;
 	private long colTime = 0; // TODO (MMB) awful hack
 
@@ -36,7 +31,7 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 5, 2);
+		airport = new Airport("muc", 1, 2);
 		rand = new Random();
 
 		for (int j = 0; j < 1; j++) {
@@ -142,9 +137,9 @@ public class Game extends BasicGame {
 			g.resetTransform();
 		}
 
-		for (int i = 1; i < path.size(); i++) {
-			g.drawLine(path.get(i - 1).x, path.get(i - 1).y, path.get(i).x,
-					path.get(i).y);
+		for (int i = 1; i < InputHandler.path.size(); i++) {
+			g.drawLine(InputHandler.path.get(i - 1).x, InputHandler.path.get(i - 1).y, InputHandler.path.get(i).x,
+					InputHandler.path.get(i).y);
 		}
 
 	}
