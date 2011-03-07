@@ -21,8 +21,10 @@ public class InputHandler {
 
 	public static void saveTrack() {
 		if (curRecordedPath.size() > 0) {
-			if (curSelection != null)
+			if (curSelection != null) {
 				curSelection.setWayPoints(curRecordedPath);
+				curSelection.isSelected = false;
+			}
 			curRecordedPath = new ArrayList<Point>();
 		}
 	}
@@ -32,6 +34,7 @@ public class InputHandler {
 			for (AircraftBase curAircraft : Game.airplanes) {
 				if (curAircraft.getPosition().distance(new Point(x, y)) < curAircraft.getDiameter()) {
 					curSelection = curAircraft;
+					curSelection.isSelected = true;
 				}
 			}
 		}

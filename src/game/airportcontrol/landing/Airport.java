@@ -30,7 +30,7 @@ public class Airport {
 
 		if ("muc" == iata) {
 			// Runways
-			this.landingDevices.add(new Runway(new Point(354, 319), 35, 10, 35,
+			this.landingDevices.add(new Runway(new Point(354, 319), 35, 350, 20,
 					60));
 			this.landingDevices.add(new Runway(new Point(502, 188), 35, 170,
 					20, 60));

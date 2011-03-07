@@ -21,7 +21,7 @@ public class GameSetup {
 	
 	public static final int UPDATE_INTERVALL_IN_MS = 20;
 	
-	public static final boolean VERBOSE = false;
+	public static final boolean VERBOSE = true;
 
 	/* some methods used for game */
 	public static AircraftBase genRandomPlane() {

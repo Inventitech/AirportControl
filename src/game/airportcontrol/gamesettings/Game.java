@@ -27,7 +27,7 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 5, 2);
+		airport = new Airport("muc", 1, 2);
 		rand = new Random();
 
 		for (int j = 0; j < 1; j++) {
@@ -55,8 +55,6 @@ public class Game extends BasicGame {
 
 		if (GameSetup.doCollisionChecks) {
 			if (Collision.hasCollision(airplanes)) {
-				// TODO (MMB) Add collision effect, end game awful use of
-				// particles
 				collision();
 			}
 		}
@@ -80,7 +78,6 @@ public class Game extends BasicGame {
 	@Override
 	public void render(GameContainer container, Graphics g)
 			throws SlickException {
-
 		airport.getImage().draw(0, 0, container.getWidth(),
 				container.getHeight());
 		g.drawString(

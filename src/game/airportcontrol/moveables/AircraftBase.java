@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.ShapeFill;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.particles.ParticleSystem;
 
 /**
@@ -33,7 +35,7 @@ public abstract class AircraftBase {
 	private double transparency;
 
 	private Point position;
-	private double curAngle, prevAngle;
+	private double curAngle, prevAngle = 0;
 	private ArrayList<Point> wayPoints;
 	private double speed;
 
@@ -241,7 +243,11 @@ public abstract class AircraftBase {
 	}
 	
 	public void drawSelected(Graphics g) {
-		g.drawArc((float)position.x, (float)position.y, (float)getDiameter(), (float)getDiameter(), 0, 360);
+		Color prevColor = g.getColor();
+		g.setColor(new Color(3, 176, 31, 120));
+		Circle myCirc = new Circle(getPosition().x, getPosition().y, (float) (getDiameter()/2));
+		g.fill(myCirc);
+		g.setColor(prevColor);
 	}
 
 	// renders the WayPoints of the Aircraft, if there are any
@@ -261,14 +267,17 @@ public abstract class AircraftBase {
 		int ay = 0;
 		double an = 0;
 
+		if(isSelected)
+			drawSelected(g);
+		
 		img = this.getImage();
-		img.setCenterOfRotation((int) (0.5 * img.getWidth() * 1), // TODO
+		img.setCenterOfRotation((float) (0.5 * img.getWidth() * 1), // TODO
 				// ADD
 				// scale
 				// factor
 				// instead
 				// of 1
-				(int) (0.5 * img.getHeight() * 1));
+				(float) (0.5 * img.getHeight() * 1));
 		
 		img.rotate((float) (getAngle()-prevAngle));
 		Color color = new Color(1f, 1f, 1f, (float) this.getTransparency());
