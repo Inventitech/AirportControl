@@ -84,6 +84,7 @@ public class Airport {
 											.getLandingPrecision() - 1);
 									curAirplane.setTransparency(curAirplane
 											.getTransparency() - 0.03);
+									curAirplane.scalingFactor-=0.01;
 									// System.out.println(curAirplane.getLandingPrecision());
 									// helpful for designing new airports
 								}
@@ -92,6 +93,7 @@ public class Airport {
 						// plane has failed landing approach
 						else {
 							curAirplane.setInitiateLanding(null);
+							curAirplane.scalingFactor=1;
 						}
 					}
 					/* Initiate landing attempt */

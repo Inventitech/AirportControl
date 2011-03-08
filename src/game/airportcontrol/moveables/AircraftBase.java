@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.ShapeFill;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.particles.ParticleSystem;
@@ -50,6 +49,7 @@ public abstract class AircraftBase {
 
 	private LandingDevice initiateLanding;
 	private int landingPrecision;
+	public double scalingFactor = 1;
 
 	private final int mapScaling = 20;
 
@@ -166,12 +166,16 @@ public abstract class AircraftBase {
 		// wall bounce back
 		if (x > width * mapScaling) {
 			curAngle = 180 + curAngle; // 180
+			this.turningDirection = turningDirections.STRAIGHT;
 		} else if (y > height * mapScaling) {
 			curAngle = 180 + curAngle; // 270
+			this.turningDirection = turningDirections.STRAIGHT;
 		} else if (x < 0) {
 			curAngle = 180 + curAngle; // 0
+			this.turningDirection = turningDirections.STRAIGHT;
 		} else if (y < 0) {
 			curAngle = 180 + curAngle;// 90
+			this.turningDirection = turningDirections.STRAIGHT;
 		}
 
 		curAngle = curAngle % 360;
@@ -271,18 +275,18 @@ public abstract class AircraftBase {
 			drawSelected(g);
 		
 		img = this.getImage();
-		img.setCenterOfRotation((float) (0.5 * img.getWidth() * 1), // TODO
+		img.setCenterOfRotation((float) (0.5 * img.getWidth() * scalingFactor), // TODO
 				// ADD
 				// scale
 				// factor
 				// instead
 				// of 1
-				(float) (0.5 * img.getHeight() * 1));
+				(float) (0.5 * img.getHeight() * scalingFactor));
 		
 		img.rotate((float) (getAngle()-prevAngle));
 		Color color = new Color(1f, 1f, 1f, (float) this.getTransparency());
 		img.draw(this.getPosition().x - this.getImage().getWidth() / 2,
-				this.getPosition().y - this.getImage().getWidth() / 2, color);
+				this.getPosition().y - this.getImage().getWidth() / 2, (float)scalingFactor, color);
 
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(0);
