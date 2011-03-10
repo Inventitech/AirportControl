@@ -34,5 +34,16 @@ public class TestWayfindings {
 		actualAngle = Wayfinding.calcAngleInSourceToTarget(new Point(1,1), new Point(0,0), 1);
 		assertEquals(225, actualAngle, 0);
 	}
+	
+	@Test public void testAngleBetweenSourceTarget() {
+		//double actualAngle = Wayfinding.calcAngleBetweenSourceTarget(new Point(0,0), new Point(1,0), new Point(1,1));
+		//assertEquals(90, actualAngle, 0);
+		
+		double actualAngle = Wayfinding.calcAngleBetweenSourceTarget(new Point(1,1), new Point(2,2), new Point(3,3));
+		assertEquals(0, actualAngle, 0);
+		
+		actualAngle = Wayfinding.calcAngleBetweenSourceTarget(new Point(1,1), new Point(2,1), new Point(3,2));
+		assertEquals(45, actualAngle, 0);
+	}
 
 }
