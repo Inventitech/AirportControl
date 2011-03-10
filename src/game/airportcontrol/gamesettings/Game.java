@@ -84,13 +84,10 @@ public class Game extends BasicGame {
 				System.getProperty("user.name") + ", "
 						+ airport.getLandedAirplanes() + " / " + airport.getToCreateAirplanes(), 0, 25);
 		
+		InputHandler.curRecordedPath.renderWayPoints(g);
+		
 		for (AircraftBase curAirplane : airplanes) {
 			curAirplane.render(g);
-		}
-
-		for (int i = 1; i < InputHandler.curRecordedPath.size(); i++) {
-			g.drawLine(InputHandler.curRecordedPath.get(i - 1).x, InputHandler.curRecordedPath.get(i - 1).y, InputHandler.curRecordedPath.get(i).x,
-					InputHandler.curRecordedPath.get(i).y);
 		}
 
 	}

@@ -35,7 +35,7 @@ public abstract class AircraftBase {
 
 	private Point position;
 	private double curAngle, prevAngle = 0;
-	private ArrayList<Point> wayPoints;
+	private AircraftPath path;
 	private double speed;
 
 	private enum turningDirections {
@@ -63,7 +63,7 @@ public abstract class AircraftBase {
 		this.position = position;
 		this.transparency = 1;
 		this.curAngle = angle;
-		this.wayPoints = null;
+		this.path = new AircraftPath();
 		this.initiateLanding = null;
 		this.landingPrecision = 10;
 		this.speed = Math.max(speed, 3.0);
@@ -72,12 +72,16 @@ public abstract class AircraftBase {
 		this.turningDirection = turningDirections.STRAIGHT;
 	}
 
+	public void setPath(AircraftPath curRecordedPath) {
+		this.path = curRecordedPath;
+	}
+	
 	public void setWayPoints(ArrayList<Point> wp) {
-		this.wayPoints = wp;
+		this.path.wayPoints = wp;
 	}
 
 	public ArrayList<Point> getWayPoints() {
-		return wayPoints;
+		return path.wayPoints;
 	}
 
 	public LandingDevice getInitiateLanding() {
@@ -95,7 +99,7 @@ public abstract class AircraftBase {
 	}
 
 	public boolean alignAircraftToPoint(ArrayList<Point> wp) {
-		if (wayPoints == null || wayPoints.size() < 1) {
+		if (path.wayPoints == null || path.size() < 1) {
 			return false;
 		}
 
@@ -137,7 +141,7 @@ public abstract class AircraftBase {
 	}
 
 	public void update(int width, int height, int delta) {
-		alignAircraftToPoint(wayPoints);
+		alignAircraftToPoint(path.wayPoints);
 		double ddx, ddy;
 		ddx = Math.cos(((curAngle) / 360) * 2 * Math.PI) * speed;
 		ddy = Math.sin(((curAngle) / 360) * 2 * Math.PI) * speed;
@@ -154,11 +158,11 @@ public abstract class AircraftBase {
 
 		Point targetPosition = new Point(x, y);
 
-		if (wayPoints != null && wayPoints.size() > 0) { // not nice
-			if (targetPosition.distance(new Point(wayPoints.get(0).x
-					* mapScaling, wayPoints.get(0).y * mapScaling)) < requiredDistanceToWaypoint
+		if (path.wayPoints != null && path.size() > 0) { // not nice
+			if (targetPosition.distance(new Point(path.get(0).x
+					* mapScaling, path.get(0).y * mapScaling)) < requiredDistanceToWaypoint
 					* mapScaling) {
-				wayPoints.remove(0);
+				path.remove(0);
 				this.turningDirection = turningDirections.STRAIGHT;
 			}
 		}
@@ -254,23 +258,14 @@ public abstract class AircraftBase {
 		g.setColor(prevColor);
 	}
 
-	// renders the WayPoints of the Aircraft, if there are any
-	private void renderWayPoints(Graphics g) {
-		if (this.getWayPoints() != null) {
-			for (int i = 1; i < this.getWayPoints().size(); i++) {
-				g.drawLine(this.getWayPoints().get(i - 1).x, this
-						.getWayPoints().get(i - 1).y, this.getWayPoints()
-						.get(i).x, this.getWayPoints().get(i).y);
-			}
-		}
-	}
-
 	public void render(Graphics g) throws SlickException {
 		Image img;
 		int ax = 0;
 		int ay = 0;
 		double an = 0;
 
+		path.renderWayPoints(g);
+		
 		if(isSelected)
 			drawSelected(g);
 		
@@ -293,8 +288,6 @@ public abstract class AircraftBase {
 
 		if (GameSetup.VERBOSE)
 			g.drawString("curAngle: " + nf.format(this.getAngle()), 0, 40);
-
-		renderWayPoints(g);
 
 		ax = this.getPosition().x;
 		ay = this.getPosition().y;

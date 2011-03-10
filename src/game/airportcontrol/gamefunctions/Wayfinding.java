@@ -50,8 +50,8 @@ public class Wayfinding {
 		v2[0] = target.x - source2.x;
 		v2[1] = target.y - source2.y;
 		
-		double tmp = scalarEuclid(v1,v2)/(lengthVector(v1)*lengthVector(v2));
-		tmp = Math.toDegrees(Math.acos(tmp));
-		return tmp;
+		double result = scalarEuclid(v1,v2)/(lengthVector(v1)*lengthVector(v2));
+		result = Math.toDegrees(Math.acos(result));
+		return result;
 	}
 }
