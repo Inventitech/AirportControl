@@ -19,7 +19,7 @@ public class Wayfinding {
 		} else {
 			// calculate new heading through arcus tangens. Note: arctan in
 			// ]-pi/2;pi/2[, map to coordinates ]-90;+90[
-			a = radToDegree((Math.atan((double) dy / (double) dx)));
+			a = Math.toDegrees(Math.atan((double) dy / (double) dx));
 		}
 		// avoid negative angles and map to full range angle [0;360]
 		if (dx < 0) {
@@ -40,20 +40,24 @@ public class Wayfinding {
 		return a;
 	}
 	
+	private static double scalarEuclid(double[] v1, double[] v2) {
+		return v1[0]*v2[0]+v1[1]*v2[1];
+	}
+	
+	private static double lengthVector(double[] v) {
+		return Math.sqrt(v[0]*v[0]+v[1]*v[1]);
+	}
+	
 	public static double calcAngleBetweenSourceTarget(Point source1, Point source2, Point target) {
 		// TODO (bellemo) needs more tweaking for delta = 0
-		double m1, m2;
-		m1 = (source2.y - source1.y)/(source2.x - source1.x);
-		m2 = (target.y - source2.y)/(target.x - source2.x);
+		double[] v1 = new double[2], v2 = new double[2];
+		v1[0] = source2.x - source1.x;
+		v1[1] = source2.y - source1.y;
+		v2[0] = target.x - source2.x;
+		v2[1] = target.y - source2.y;
 		
-		double phi;
-		if(m1*m2==-1) {
-			phi = 90;
-		}
-		else {
-			phi = radToDegree(Math.atan(Math.abs((m1-m2)/(1+m1*m2))));
-		}
-		
-		return phi;
+		double tmp = scalarEuclid(v1,v2)/(lengthVector(v1)*lengthVector(v2));
+		tmp = Math.toDegrees(Math.acos(tmp));
+		return tmp;
 	}
 }
