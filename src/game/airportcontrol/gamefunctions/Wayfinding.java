@@ -2,12 +2,7 @@ package game.airportcontrol.gamefunctions;
 
 import java.awt.Point;
 
-public class Wayfinding {
-	// converts from rad (in pi) to full degree (0-360)
-	public static double radToDegree(double rad) {
-		return rad*360/(2*Math.PI);
-	}
-	
+public class Wayfinding {	
 	public static double calcAngleInSourceToTarget(Point source, Point target,
 			int mapScaling) {
 		int dy = (target.y * mapScaling) - source.y;
@@ -49,7 +44,6 @@ public class Wayfinding {
 	}
 	
 	public static double calcAngleBetweenSourceTarget(Point source1, Point source2, Point target) {
-		// TODO (bellemo) needs more tweaking for delta = 0
 		double[] v1 = new double[2], v2 = new double[2];
 		v1[0] = source2.x - source1.x;
 		v1[1] = source2.y - source1.y;
