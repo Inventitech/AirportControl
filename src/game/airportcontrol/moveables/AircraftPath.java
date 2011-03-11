@@ -6,8 +6,14 @@ import java.util.ArrayList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-/* functions in parts as a wrapper class for ArrayList
- * but has ability to draw itself */
+/* 
+ * Class is representing an aircraft's planned flight path.
+ * It functions in parts as a wrapper class for ArrayList
+ * but has additional ability to draw itself. 
+ * 
+ * TODO (MMB) add ability to directly fly to first waypoint, once that has been 
+ * assigned
+ */
 public class AircraftPath {
 	ArrayList<Point> wayPoints; // TODO (MMB) change visibility to private
 
@@ -15,7 +21,7 @@ public class AircraftPath {
 		wayPoints = new ArrayList<Point>();
 	}
 
-	// renders the WayPoints of the Aircraft, if there are any
+	/* Renders the WayPoints of the Aircraft, if there are any */
 	public void renderWayPoints(Graphics g) {
 		Color prevColor = g.getColor();
 		g.setColor(new Color(255, 210, 0, 120));

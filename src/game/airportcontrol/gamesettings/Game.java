@@ -27,7 +27,7 @@ public class Game extends BasicGame {
 
 	@Override
 	public void init(GameContainer container) throws SlickException {
-		airport = new Airport("muc", 1, 2);
+		airport = new Airport("muc", 5, 1.5);
 		rand = new Random();
 
 		for (int j = 0; j < 1; j++) {

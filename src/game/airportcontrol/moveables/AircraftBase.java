@@ -19,15 +19,12 @@ import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.particles.ParticleSystem;
 
 /**
- * @author Moritz Beller
+ * The aircraft angle is in [0;360] always It should be noted that the nose of
+ * the aircraft when pointing to the right hand side denotes the 0, angle. A
+ * clockwise rotation from this direction onward increases the angle
  * 
- *         The aircraft angle is in [0;360] always It should be noted that the
- *         nose of the aircraft when pointing to the right hand side denotes the
- *         0, angle. A clockwise rotation from this direction onward increases
- *         the angle
- * 
- *         All angles and distances are relative to middle of aircraft which is
- *         defined to be centre of picture.
+ * All angles and distances are relative to middle of aircraft which is defined
+ * to be centre of picture.
  */
 public abstract class AircraftBase {
 	protected Image image;
@@ -55,7 +52,7 @@ public abstract class AircraftBase {
 
 	public ParticleSystem system;
 	protected int mode = ParticleSystem.BLEND_COMBINE;
-	
+
 	public boolean isSelected = false;
 
 	public AircraftBase(Point position, int angle, double speed,
@@ -75,7 +72,7 @@ public abstract class AircraftBase {
 	public void setPath(AircraftPath curRecordedPath) {
 		this.path = curRecordedPath;
 	}
-	
+
 	public void setWayPoints(ArrayList<Point> wp) {
 		this.path.wayPoints = wp;
 	}
@@ -141,6 +138,8 @@ public abstract class AircraftBase {
 	}
 
 	public void update(int width, int height, int delta) {
+		// TODO (bellemo) refactor most of the update method into class
+		// AircraftPath
 		alignAircraftToPoint(path.wayPoints);
 		double ddx, ddy;
 		ddx = Math.cos(((curAngle) / 360) * 2 * Math.PI) * speed;
@@ -159,8 +158,8 @@ public abstract class AircraftBase {
 		Point targetPosition = new Point(x, y);
 
 		if (path.wayPoints != null && path.size() > 0) { // not nice
-			if (targetPosition.distance(new Point(path.get(0).x
-					* mapScaling, path.get(0).y * mapScaling)) < requiredDistanceToWaypoint
+			if (targetPosition.distance(new Point(path.get(0).x * mapScaling,
+					path.get(0).y * mapScaling)) < requiredDistanceToWaypoint
 					* mapScaling) {
 				path.remove(0);
 				this.turningDirection = turningDirections.STRAIGHT;
@@ -249,11 +248,12 @@ public abstract class AircraftBase {
 			system.getEmitter(i).setEnabled(true);
 		}
 	}
-	
+
 	public void drawSelected(Graphics g) {
 		Color prevColor = g.getColor();
 		g.setColor(new Color(3, 176, 31, 120));
-		Circle myCirc = new Circle(getPosition().x, getPosition().y, (float) (getDiameter()/2));
+		Circle myCirc = new Circle(getPosition().x, getPosition().y,
+				(float) (getDiameter() / 2));
 		g.fill(myCirc);
 		g.setColor(prevColor);
 	}
@@ -265,10 +265,10 @@ public abstract class AircraftBase {
 		double an = 0;
 
 		path.renderWayPoints(g);
-		
-		if(isSelected)
+
+		if (isSelected)
 			drawSelected(g);
-		
+
 		img = this.getImage();
 		img.setCenterOfRotation((float) (0.5 * img.getWidth() * scalingFactor), // TODO
 				// ADD
@@ -277,11 +277,12 @@ public abstract class AircraftBase {
 				// instead
 				// of 1
 				(float) (0.5 * img.getHeight() * scalingFactor));
-		
-		img.rotate((float) (getAngle()-prevAngle));
+
+		img.rotate((float) (getAngle() - prevAngle));
 		Color color = new Color(1f, 1f, 1f, (float) this.getTransparency());
 		img.draw(this.getPosition().x - this.getImage().getWidth() / 2,
-				this.getPosition().y - this.getImage().getWidth() / 2, (float)scalingFactor, color);
+				this.getPosition().y - this.getImage().getWidth() / 2,
+				(float) scalingFactor, color);
 
 		NumberFormat nf = NumberFormat.getInstance();
 		nf.setMaximumFractionDigits(0);
