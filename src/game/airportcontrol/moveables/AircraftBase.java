@@ -232,6 +232,10 @@ public abstract class AircraftBase {
 	public double getTransparency() {
 		return transparency;
 	}
+	
+	public AircraftPath getPath() {
+		return path;
+	}
 
 	public double getDiameter() {
 		double max = (image.getHeight() > image.getWidth() ? image.getHeight()

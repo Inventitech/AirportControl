@@ -7,7 +7,7 @@ import java.awt.Point;
 
 import org.junit.Test;
 
-public class TestWayfindings {
+public class TestWayfinding {
 
 	@Test
 	public void testCalcAngleInSourceToTarget() {

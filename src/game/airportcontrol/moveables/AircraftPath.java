@@ -16,7 +16,7 @@ import org.newdawn.slick.Graphics;
  */
 public class AircraftPath {
 	ArrayList<Point> wayPoints; // TODO (MMB) change visibility to private
-
+	
 	public AircraftPath() {
 		wayPoints = new ArrayList<Point>();
 	}

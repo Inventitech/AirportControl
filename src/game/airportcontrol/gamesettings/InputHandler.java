@@ -23,23 +23,35 @@ public class InputHandler {
 	public static void saveTrack() {
 		if (curRecordedPath.size() > 0) {
 			if (curSelection != null) {
-				curSelection.setPath(curRecordedPath);
 				curSelection.isSelected = false;
+				curSelection = null;
 			}
-			curRecordedPath = new AircraftPath();
+		}
+	}
+	
+	public static void selectAircraft(Point curPoint) {
+		for (AircraftBase curAircraft : Game.airplanes) {
+			if (curAircraft.getPosition().distance(curPoint) < curAircraft
+					.getDiameter()) {
+				curSelection = curAircraft;
+				curSelection.isSelected = true;
+			}
 		}
 	}
 
 	public static void recordTrack(int x, int y) {
 		Point curPoint = new Point(x,y);
-
-		if (curRecordedPath.isEmpty()) {
-			for (AircraftBase curAircraft : Game.airplanes) {
-				if (curAircraft.getPosition().distance(curPoint) < curAircraft.getDiameter()) {
-					curSelection = curAircraft;
-					curSelection.isSelected = true;
-				}
-			}
+		
+		// If there is no AirCraft selected, start recording a new path.
+		// This means that upon selection, the aircraft's current path
+		// will be overridden
+		// otherwise, continue recording current path
+		if(curSelection != null)  {
+			curRecordedPath = curSelection.getPath();
+		}
+		else {
+			curRecordedPath = new AircraftPath();
+			selectAircraft(curPoint);
 		}
 		
 		if (curSelection != null) {
@@ -61,6 +73,7 @@ public class InputHandler {
 			} else {
 				curRecordedPath.add(curPoint);
 			}
+			curSelection.setPath(curRecordedPath);
 		}
 	}
 }
