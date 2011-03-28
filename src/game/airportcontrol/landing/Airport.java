@@ -115,6 +115,7 @@ public class Airport {
 							&& curAirplane.getInitiateLanding() == curLandingDev) {
 						// plane has successfully landed
 						if (curAirplane.getLandingPrecision() <= 0) {
+							curAirplane.setPath(new AircraftPath());
 							airplanes.remove(curAirplane);
 							// System.out.println(curAirplane.getAngle()); //
 							// helpful for designing new airports
