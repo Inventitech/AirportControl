@@ -2,7 +2,6 @@ package game.airportcontrol.landing;
 
 import game.airportcontrol.gamesettings.GameSetup;
 import game.airportcontrol.moveables.AircraftBase;
-import game.airportcontrol.moveables.AircraftPath;
 import game.airportcontrol.moveables.Airplane;
 import game.airportcontrol.moveables.Helicopter;
 
@@ -64,7 +63,6 @@ public class Airport {
 							&& curAirplane.getInitiateLanding() == curLandingDev) {
 						// plane has successfully landed
 						if (curAirplane.getLandingPrecision() <= 0) {
-							curAirplane.setPath(new AircraftPath());
 							airplanes.remove(curAirplane);
 							// System.out.println(curAirplane.getAngle());
 							// helpful for designing new airports
@@ -115,7 +113,6 @@ public class Airport {
 							&& curAirplane.getInitiateLanding() == curLandingDev) {
 						// plane has successfully landed
 						if (curAirplane.getLandingPrecision() <= 0) {
-							curAirplane.setPath(new AircraftPath());
 							airplanes.remove(curAirplane);
 							// System.out.println(curAirplane.getAngle()); //
 							// helpful for designing new airports

@@ -23,7 +23,7 @@ public class GameSetup {
 	
 	public static final boolean VERBOSE = true;
 
-	/* some common methods used for general game setup */
+	/* some methods used for game */
 	public static AircraftBase genRandomPlane() {
 		Random rnd = new Random();
 		int x = rnd.nextInt(GameSetup.resWidth * 20);
